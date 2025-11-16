@@ -1,0 +1,234 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Project Title</title>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/frame.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/controls.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/widgets.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/custom.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/widgets.js"></script>
+  <script src="js/custom.js"></script>
+  <style>
+    .menu-help {
+      color: rgb(255, 255, 255) !important;
+      opacity: 1 !important;
+      font-weight: 700 !important;
+    }
+    .menu {
+  z-index: 2;
+  position: relative;
+  width: 100%;
+  background-color: #7098e2;
+  min-width: 300px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+a {
+  color: red;
+}
+  </style>
+</head>
+
+<body>
+  <div class="menu">
+    <div class="menu-table flex-row-space-between">
+      <div class="logo flex-row-center">
+        <a href="index.html">MSES</a>
+      </div>
+      <a class="menu-button" tabindex="0" href="javascript:void(0)">
+        <img src="img/menu.png">
+      </a>
+      <div class="menu-items flex-row-center flex-item">
+         <a href="index.html" class="menu-index">Main Page</a>
+        <a href="MyPhotos.html" class="menu-calender">My Photos</a>
+        <a href="aboutus.html" class="menu-aboutus">About Us</a>
+        <a href="help.html" class="menu-help">Help/FAQ</a>
+        <button id="signOutButton" class="menu-help">Sign Out</button> <!-- Sign Out Button -->
+      </div>
+    </div>
+  </div>
+  <div class="menu-container"></div>
+  <div class="content-container">
+    <div class="content">
+      <div class="content-table flex-column">
+        <div class="flex-row">
+          <div class="flex-item flex-column"> 
+            <p class="text add-top-margin">
+              Hello. You are here to find a solution to your problem, ask a question that you wonder or just want to see the depths of our websites.":)" In this page, you can easily find a solution to your problems, contact with us and spend your time enjoyful. Most of the features that you searched for are in the below. Have a good time.
+            </p>
+          </div>
+        </div>
+        <!-------------------------------------------------------------------------------------------->
+        <!-------------------------------------------------------------------------------------------->
+        <div class="flex-row">
+          <div class="flex-item flex-column">
+            <h2 class="add-top-margin">How can we help you?</h2>
+            <hr>
+            <p class="text">
+              The list of commonly asked questions and answers on a website about topics such as hours, access and places, website information, and return policies are in the bottom of the page.
+            </p>
+            <div class="control-group">
+              <button id="dialog-btn-1" class="custom-button-flat"><img src="img/settings.png"><span>Question 1</span></button>
+              <button id="dialog-btn-2" class="custom-button-flat"><img src="img/settings.png"><span>Question 2</span></button>
+              <button id="dialog-btn-3" class="custom-button-flat"><img src="img/settings.png"><span>Question 3</span></button>
+              <button id="dialog-btn-4" class="custom-button-flat"><img src="img/settings.png"><span>Question 4</span></button>
+              <button id="dialog-btn-5" class="custom-button-flat"><img src="img/settings.png"><span>Question 5</span></button>
+              <button id="dialog-btn-6" class="custom-button-flat"><img src="img/settings.png"><span>Question 6</span></button>
+              <button id="dialog-btn-7" class="custom-button-flat"><img src="img/settings.png"><span>Question 7</span></button>
+            </div>
+            <div id="dialog-1" title="Dialog 1" data-role="none">
+              <h3>Question</h3>
+              <p>How can I upload photos?</p>
+              <br>
+              <h3>Answer</h3>
+              <p>In MyPhotos page.</p>
+            </div>
+            <div id="dialog-2" title="Dialog 2" data-role="none">
+              <h3>Question</h3>
+              <p>How can I see other people's photos?</p>
+              <br>
+              <h3>Answer</h3>
+              <p>In the Main page you can see it.</p>
+            </div>
+            <div id="dialog-3" title="Dialog 3" data-role="none">
+              <h3>Question</h3>
+              <p>Where can I find a solution to my problem in the website?</p>
+              <br>
+              <h3>Answer</h3>
+              <p>This page is created for you all to find your solutions.</p>
+            </div>
+            <div id="dialog-4" title="Dialog 4" data-role="none">
+              <h3>Question</h3>
+              <p>How can I reach site owners?</p>
+              <br>
+              <h3>Answer</h3>
+              <p>About Us page contains information about the site owners. </p>
+            </div>
+            <div id="dialog-5" title="Dialog 5" data-role="none">
+              <h3>Question</h3>
+              <p>How did you create your website?</p>
+              <br>
+              <h3>Answer</h3>
+              <p>With too much effort.</p>
+            </div>
+            <div id="dialog-6" title="Dialog 6" data-role="none">
+              <h3>Question</h3>
+              <p>Do everyone able to use that website?</p>
+              <br>
+              <h3>Answer</h3>
+              <p>Yes, people who sign in can use our website to add photo and rate other people's photo.</p>
+            </div>
+            <div id="dialog-7" title="Dialog 7" data-role="none">
+              <h3>Question</h3>
+              <p>Who are you?</p>
+              <br>
+              <h3>Answer</h3>
+              <p>We are MSES.</p>
+            </div>
+            
+            <div id="share-dialog" title="Contact" data-role="none">
+              <p>You can use the Linkedin to contact with us: <br>
+                <a href="##">Linkedin</a></p>
+              
+              <p>You can use the Facebook to contact with us: <br>
+                <a href="###">Facebook</a></p>
+
+                <p>You can use the Instagram to contact with us: <br>
+                  <a href="###">Instagram</a></p>
+                
+              
+              <p>You can use the mail below to contact with us directly: <br>
+                (the mails that arrived to us will be respond in 2 weeks at most)</p>
+              <input id="share-url" class="custom-textbox" type="text" autofocus="autofocus" value="divas@info.com" readonly>
+              <p id="share-url-copy-prompt">The share link is copied.</p>
+              
+            </div>
+          </div>
+        </div>
+
+<!-- 
+  <div class="custom-legend noselect" style="width: 210px" id="custom-legend">
+              <h3 class="legend-title">Fruits (Collapsible)</h3>
+              <div class="legend-scale">
+                <ul class="legend-labels">
+                  <li><span style="background:#b05ed6;"></span>Apple</li>
+                  <li><span style="background:#dae65f;"></span>Banana</li>
+                  <li><span style="background:#6aeec1;"></span>Mango</li>
+                  <li><span style="background:#ec8a27;"></span>Watermelon</li>
+                </ul>
+                <div class="legend-source">Source: <a target="_blank" href="https://github.com/yenchiah/project-website-template">GitHub</a></div>
+              </div>
+             -->
+        <!-------------------------------------------------------------------------------------------->
+        <div class="flex-row">
+          <div class="flex-item flex-item-stretch flex-column">
+            <p class="text text-small text-italic">
+              Credits: <span class="highlight-text">Organization One</span>:MSES 
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBSCuSjLtRxCicBpiYE4zV_CQ6iF23CMos",
+      authDomain: "ceit133-mses.firebaseapp.com",
+      databaseURL: "https://ceit133-mses-default-rtdb.firebaseio.com",
+      projectId: "ceit133-mses",
+      storageBucket: "ceit133-mses.appspot.com",
+      messagingSenderId: "803859950218",
+      appId: "1:803859950218:web:48b897035bb041d1799b73",
+      measurementId: "G-09BSCKLQ2Y"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Check Auth State
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log('User is signed in:', user);
+      } else {
+        console.log('No user is signed in');
+        window.location.href = "./login.html"; // Redirect to login page if not authenticated
+      }
+    });
+
+    // Sign Out Function
+    const handleSignOut = () => {
+      signOut(auth).then(() => {
+        alert('User signed out successfully!');
+        window.location.href = "./index.html"; // Redirect to login page after sign-out
+      }).catch((error) => {
+        alert(error.message);
+        console.error(error.code, error.message);
+      });
+    };
+
+    // Add event listener to the sign-out button
+    document.getElementById('signOutButton').addEventListener('click', handleSignOut);
+  </script>
+</body>
+
+</html>

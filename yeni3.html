@@ -1,0 +1,266 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Calendar with Photo Upload</title>
+   <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/frame.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/controls.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/custom.css" media="screen" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="./calendarstyle.css">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <style>
+    .menu-calender {
+      color: rgb(255, 255, 255) !important;
+      opacity: 1 !important;
+      font-weight: 700 !important;
+    }
+
+    .menu {
+      z-index: 2;
+      position: sticky;
+      top: 0px;
+      width: 100%;
+      margin: auto;
+      background-color: #7098e2;
+      min-width: 300px;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .uploaded-files {
+      margin: 20px;
+    }
+
+    .file-item {
+      margin-bottom: 10px;
+    }
+
+    .file-link {
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .photo-preview {
+      margin-top: 10px;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      display: none;
+    }
+
+    .image-container {
+      width: 200px;
+      height: 240px; /* Increased height to accommodate buttons */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: 150px; /* Set a fixed height for the image */
+      object-fit: contain; /* Ensure the image fits within the container */
+      margin-bottom: 10px;
+    }
+
+    .image-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+
+    .delete-button {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="menu">
+    <div class="menu-table flex-row-space-between">
+      <div class="logo flex-row-center">
+        <a href="index.html">MSES</a>
+      </div>
+      <a class="menu-button" tabindex="0" href="javascript:void(0)">
+        <img src="img/menu.png">
+      </a>
+      <div class="menu-items flex-row-center flex-item">
+         <a href="index.html" class="menu-index">Main Page</a>
+        <a href="MyPhotos.html" class="menu-calender">My Photos</a>
+        <a href="aboutus.html" class="menu-aboutus">About Us</a>
+        <a href="help.html" class="menu-help">Help/FAQ</a>
+        <button id="signOutButton" class="menu-help">Sign Out</button> <!-- Sign Out Button -->
+      </div>
+    </div>
+  </div>
+
+  <h1>Upload Image</h1>
+  <form id="uploadForm">
+    <input type="file" id="imageInput" accept="image/*"><br><br>
+    <button type="submit">Upload</button>
+  </form>
+  <img id="imagePreview" src="" alt="Image Preview" style="display: none; width: 200px;"><br>
+  <p id="uploadStatus"></p>
+  <div id="userImages"></div>
+
+  <script type="module">
+    // Firebase SDK'y� y�kleyin
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getDatabase, ref as dbRef, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    // Firebase yap�land�rman�z� buraya yerle�tirin
+    const firebaseConfig = {
+      apiKey: "AIzaSyBSCuSjLtRxCicBpiYE4zV_CQ6iF23CMos",
+    authDomain: "ceit133-mses.firebaseapp.com",
+    databaseURL: "https://ceit133-mses-default-rtdb.firebaseio.com",
+    projectId: "ceit133-mses",
+    storageBucket: "ceit133-mses.appspot.com",
+    messagingSenderId: "803859950218",
+    appId: "1:803859950218:web:48b897035bb041d1799b73",
+    measurementId: "G-09BSCKLQ2Y"
+    };
+
+    // Firebase'i ba�lat
+    const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    const uploadForm = document.getElementById('uploadForm');
+    const imageInput = document.getElementById('imageInput');
+    const imagePreview = document.getElementById('imagePreview');
+    const uploadStatus = document.getElementById('uploadStatus');
+    const userImages = document.getElementById('userImages');
+
+    let currentUser = null;
+
+    // Kullan�c� giri�ini kontrol et
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        currentUser = user;
+        loadUserImages(user.uid);
+      } else {
+        alert('You must be logged in to upload images.');
+        window.location.href = './login.html'; // Giri� sayfas�na y�nlendir
+      }
+    });
+
+    // Resim �nizlemesini g�ster
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          imagePreview.src = e.target.result;
+          imagePreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        imagePreview.style.display = 'none';
+      }
+    });
+
+    // Form g�nderildi�inde resmi y�kle
+    uploadForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const file = imageInput.files[0];
+      if (!file) {
+        uploadStatus.textContent = 'Please select an image to upload.';
+        return;
+      }
+
+      const filePath = `images/${currentUser.uid}/${file.name}`;
+      const storageRef = ref(storage, filePath);
+      uploadBytes(storageRef, file)
+        .then((snapshot) => {
+          return getDownloadURL(snapshot.ref);
+        })
+        .then((url) => {
+          saveUrlToDatabase(currentUser.uid, url, filePath);
+          uploadStatus.textContent = 'Upload successful!';
+          displayImage(url, filePath);
+        })
+        .catch((error) => {
+          uploadStatus.textContent = `Upload failed: ${error.message}`;
+          console.error('Upload error:', error);
+        });
+    });
+
+    // URL'yi Realtime Database'e kaydet
+    function saveUrlToDatabase(uid, url, filePath) {
+      const userImagesRef = dbRef(database, `user_images/${uid}`);
+      const newImageRef = push(userImagesRef);
+      set(newImageRef, { url: url, path: filePath });
+    }
+
+    // Kullan�c�n�n y�kledi�i resimleri y�kle ve g�ster
+    function loadUserImages(uid) {
+      const userImagesRef = dbRef(database, `user_images/${uid}`);
+      onValue(userImagesRef, (snapshot) => {
+        userImages.innerHTML = '';
+        snapshot.forEach((childSnapshot) => {
+          const imageUrl = childSnapshot.val().url;
+          const filePath = childSnapshot.val().path;
+          displayImage(imageUrl, filePath, childSnapshot.key);
+        });
+      });
+    }
+
+    // Resimleri g�r�nt�le ve silme d��mesi ekle
+    function displayImage(url, filePath, key) {
+      const imgContainer = document.createElement('div');
+      imgContainer.className = 'image-container';
+
+      const imgElement = document.createElement('img');
+      imgElement.src = url;
+      imgContainer.appendChild(imgElement);
+
+      const deleteButton = document.createElement('button');
+      deleteButton.textContent = 'Delete';
+      deleteButton.className = 'delete-button';
+      deleteButton.onclick = () => deleteImage(filePath, key);
+      imgContainer.appendChild(deleteButton);
+
+      userImages.appendChild(imgContainer);
+    }
+
+    // Resmi ve veritaban� kayd�n� sil
+    function deleteImage(filePath, key) {
+  const storageRef = ref(storage, filePath);
+  deleteObject(storageRef).then(() => {
+    const imageRef = dbRef(database, `user_images/${currentUser.uid}/${key}`);
+    return remove(imageRef);
+  }).then(() => {
+    console.log('File deleted successfully and database updated');
+    loadUserImages(currentUser.uid); // Resimleri tekrar y�kleyin
+  }).catch((error) => {
+    console.error('Delete error:', error);
+  });
+}
+  </script>
+</body>
+
+</html>

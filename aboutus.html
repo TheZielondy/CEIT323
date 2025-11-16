@@ -1,0 +1,177 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Project Title</title>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://use.fontawesome.com/releases/v5.2.0/css/all.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/base/jquery-ui.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/frame.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/controls.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/widgets.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/custom.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+  <script src="js/menu.js"></script>
+  <script src="js/widgets.js"></script>
+  <script src="js/custom.js"></script>
+  <style>
+    .menu-aboutus {
+      color: rgb(255, 255, 255) !important;
+      opacity: 1 !important;
+      font-weight: 700 !important;
+    }
+    .menu {
+  z-index: 2;
+  position: sticky;
+  top: 0px;
+  width: 100%;
+  background-color: #7098e2;
+  min-width: 300px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+  </style>
+</head>
+
+<body>
+  <div class="menu">
+    <div class="menu-table flex-row-space-between">
+      <div class="logo flex-row-center">
+        <a href="./index.html">MSES</a>
+      </div>
+      <a class="menu-button" tabindex="0" href="javascript:void(0)">
+        <img src="img/menu.png">
+      </a>
+      <div class="menu-items flex-row-center flex-item">
+        <a href="index.html" class="menu-index">Main Page</a>
+        <a href="MyPhotos.html" class="menu-calender">My Photos</a>
+        <a href="aboutus.html" class="menu-aboutus">About Us</a>
+        <a href="help.html" class="menu-help">Help/FAQ</a>
+        <button id="signOutButton" class="menu-help">Sign Out</button> <!-- Sign Out Button -->
+      </div>
+    </div>
+  </div>
+  <div class="menu-container"></div>
+  <div class="content-container">
+    <div class="content">
+      <div class="content-table flex-column">
+      
+          <!--Start Intro-->
+          <div class="flex-row">
+            <div class="flex-item flex-column">
+            </div>
+            <div class="flex-item flex-column">
+             <p class="text text-large">
+              <b>MSES</b> 
+               <br>
+               <span class="who-we-are">Who We are?</span> 
+              </p>
+            </div>
+          </div>
+          <div class="flex-row">
+            <div class="flex-item flex-column">
+              <p class="text add-top-margin">
+                We are first-year students studying at the Department of Computer Education and Instructional Technology at Middle East Technical University.<br>
+                <a href="mailto:selim.karakus@metu.edu.tr">Selim Karakuş</a><br>
+                <a href="mailto:abdulkadir.kurt@metu.edu.tr">Muhammed Abdulkadir Kurt</a><br>
+                <a href="mailto:eren.basdemir_01@metu.edu.tr">Eren Barış Başdemir</a><br>
+				<a href="mailto:e262086@metu.edu.tr">Selçuk Kumbasar</a>
+              </p>
+            </div>
+          </div>
+        <!--End Intro-->
+      
+        <!-------------------------------------------------------------------------------------------->
+        <div class="flex-row">
+          <div class="flex-item flex-column">
+            <h2 class="add-top-margin">Your Experiences</h2>
+            <hr>
+            <p class="text">
+				Our site is very useful and informative for people who are trying to share their photos and see others photos easily thanks to our site.
+				You can share your views with us by clicking the button you want to show how your experience was and your 
+				thoughts about our site.
+            </p>
+            <div class="control-group">
+              <div class="custom-radio custom-radio-left">
+                <input type="radio" name="playback-speed" value="slow" id="speed-slow">
+                <label for="speed-slow">Enjoyful</label>
+              </div>
+              <div class="custom-radio custom-radio-middle">
+                <input type="radio" name="playback-speed" value="medium" id="speed-medium" checked>
+                <label for="speed-medium">Informative</label>
+              </div>
+              <div class="custom-radio custom-radio-right">
+                <input type="radio" name="playback-speed" value="fast" id="speed-fast">
+                <label for="speed-fast">Beneficial</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-------------------------------------------------------------------------------------------->
+        <div class="flex-row">
+          <div class="flex-item flex-item-stretch flex-column">
+            <p class="text text-small text-italic">
+              Credits: <span class="highlight-text">Organization One</span>:MSES
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyBSCuSjLtRxCicBpiYE4zV_CQ6iF23CMos",
+      authDomain: "ceit133-mses.firebaseapp.com",
+      databaseURL: "https://ceit133-mses-default-rtdb.firebaseio.com",
+      projectId: "ceit133-mses",
+      storageBucket: "ceit133-mses.appspot.com",
+      messagingSenderId: "803859950218",
+      appId: "1:803859950218:web:48b897035bb041d1799b73",
+      measurementId: "G-09BSCKLQ2Y"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Check Auth State
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log('User is signed in:', user);
+      } else {
+        console.log('No user is signed in');
+        window.location.href = "./login.html"; // Redirect to login page if not authenticated
+      }
+    });
+
+    // Sign Out Function
+    const handleSignOut = () => {
+      signOut(auth).then(() => {
+        alert('User signed out successfully!');
+        window.location.href = "./index.html"; // Redirect to login page after sign-out
+      }).catch((error) => {
+        alert(error.message);
+        console.error(error.code, error.message);
+      });
+    };
+
+    // Add event listener to the sign-out button
+    document.getElementById('signOutButton').addEventListener('click', handleSignOut);
+  </script>
+</body>
+
+</html>

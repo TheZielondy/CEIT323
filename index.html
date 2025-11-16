@@ -1,0 +1,279 @@
+
+<!doctype html>
+<html>
+
+<head>
+  <title>All User Images</title>
+  <meta charset="utf-8" name="viewport" content="width=device-width, initial-scale=1">
+  <link href="css/frame.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/controls.css" media="screen" rel="stylesheet" type="text/css" />
+  <link href="css/custom.css" media="screen" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="./calendarstyle.css">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300,700' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <style>
+    .menu-calender {
+      color: rgb(255, 255, 255) !important;
+      opacity: 1 !important;
+      font-weight: 700 !important;
+    }
+
+    .menu {
+      z-index: 2;
+      position: sticky;
+      top: 0px;
+      width: 100%;
+      margin: auto;
+      background-color: #7098e2;
+      min-width: 300px;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    .uploaded-files {
+      margin: 20px;
+    }
+
+    .file-item {
+      margin-bottom: 10px;
+    }
+
+    .file-link {
+      color: blue;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    .photo-preview {
+      margin-top: 10px;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      display: none;
+    }
+
+    .image-container {
+      width: 200px;
+      height: 240px; /* Increased height to accommodate buttons */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 10px;
+      border: 1px solid #ddd;
+      padding: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+    }
+
+    .image-container img {
+      width: 100%;
+      height: 150px; /* Set a fixed height for the image */
+      object-fit: contain; /* Ensure the image fits within the container */
+      margin-bottom: 10px;
+    }
+
+    .image-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-around;
+    }
+
+    .rating-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .rating-buttons {
+      display: flex;
+      justify-content: center;
+      margin-top: 5px;
+    }
+
+    .rate-button {
+      width: 25px; /* Puan d��melerinin geni�li�i */
+      height: 25px; /* Puan d��melerinin y�ksekli�i */
+      background-color: blue;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      margin: 2px;
+    }
+
+    .rating {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+  <div class="menu">
+    <div class="menu-table flex-row-space-between">
+      <div class="logo flex-row-center">
+        <a href="index.html">MSES</a>
+      </div>
+      <a class="menu-button" tabindex="0" href="javascript:void(0)">
+        <img src="img/menu.png">
+      </a>
+      <div class="menu-items flex-row-center flex-item">
+         <a href="index.html" class="menu-index">Main Page</a>
+        <a href="MyPhotos.html" class="menu-calender">My Photos</a>
+        <a href="aboutus.html" class="menu-aboutus">About Us</a>
+        <a href="help.html" class="menu-help">Help/FAQ</a>
+        <button id="signOutButton" class="menu-help">Sign Out</button> <!-- Sign Out Button -->
+      </div>
+    </div>
+  </div>
+
+  <h1>Gallery</h1>
+  <div id="userImages" class="image-grid"></div>
+
+  <script type="module">
+    // Firebase SDK'y� y�kleyin
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getDatabase, ref as dbRef, set, push, onValue, update } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+    // Firebase yap�land�rman�z� buraya yerle�tirin
+    const firebaseConfig = {
+      apiKey: "AIzaSyBSCuSjLtRxCicBpiYE4zV_CQ6iF23CMos",
+      authDomain: "ceit133-mses.firebaseapp.com",
+      databaseURL: "https://ceit133-mses-default-rtdb.firebaseio.com",
+      projectId: "ceit133-mses",
+      storageBucket: "ceit133-mses.appspot.com",
+      messagingSenderId: "803859950218",
+      appId: "1:803859950218:web:48b897035bb041d1799b73",
+      measurementId: "G-09BSCKLQ2Y"
+    };
+
+    // Firebase'i ba�lat
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const database = getDatabase(app);
+
+    const userImages = document.getElementById('userImages');
+
+    let currentUser = null;
+
+    // Kullan�c� giri�ini kontrol et // loadUserImages();
+    // Check Auth State
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+		  currentUser = user;
+		  loadUserImages();
+        console.log('User is signed in:', user);
+      } else {
+        console.log('No user is signed in');
+        window.location.href = "./login.html"; // Redirect to login page if not authenticated
+      }
+    });
+	  // Sign Out Function
+    // Sign-out butonunu seçin
+    const signOutButton = document.getElementById('signOutButton');
+
+    // Sign-out butonuna tıklandığında çıkış işlemini gerçekleştiren bir olay dinleyicisi ekle
+    signOutButton.addEventListener('click', signOut);
+
+    // Firebase Authentication'dan çıkış yapacak olan fonksiyon
+    function signOut() {
+        auth.signOut().then(() => {
+            // Çıkış başarılı olduğunda kullanıcıyı başka bir sayfaya yönlendirin veya istediğiniz işlemleri yapın
+            alert('User signed out successfully!');
+            window.location.href = './index.html'; // Örneğin, anasayfaya yönlendirme
+        }).catch((error) => {
+            // Hata durumunda kullanıcıya bildirim gösterin veya hata mesajını konsola yazdırın
+            alert('Error signing out: ' + error.message);
+            console.error('Error signing out:', error);
+        });
+    }
+    // Kullan�c�n�n y�kledi�i resimleri y�kle ve g�ster
+    function loadUserImages() {
+      const userImagesRef = dbRef(database, `gallery`);
+      onValue(userImagesRef, (snapshot) => {
+        const imagesArray = [];
+        snapshot.forEach((childSnapshot) => {
+          const imageUrl = childSnapshot.val().url;
+          const filePath = childSnapshot.val().path;
+          const averageRating = childSnapshot.val().averageRating || 0;
+          imagesArray.push({ url: imageUrl, path: filePath, key: childSnapshot.key, averageRating: averageRating });
+        });
+        imagesArray.sort((a, b) => b.averageRating - a.averageRating);
+        userImages.innerHTML = '';
+        imagesArray.forEach((imageData) => {
+          displayImage(imageData.url, imageData.path, imageData.key, imageData.averageRating);
+        });
+      });
+    }
+
+    // Resimleri g�r�nt�le ve puan d��melerini ekle
+    function displayImage(url, filePath, key, averageRating) {
+      const imgContainer = document.createElement('div');
+      imgContainer.className = 'image-container';
+
+      const imgElement = document.createElement('img');
+      imgElement.src = url;
+      imgContainer.appendChild(imgElement);
+
+      const ratingContainer = document.createElement('div');
+      ratingContainer.className = 'rating-container';
+
+      const ratingDisplay = document.createElement('span');
+      ratingDisplay.className = 'rating';
+      ratingDisplay.textContent = `Rating: ${averageRating.toFixed(2)}`;
+      ratingContainer.appendChild(ratingDisplay);
+
+      const ratingButtons = document.createElement('div');
+      ratingButtons.className = 'rating-buttons';
+
+      for (let i = 1; i <= 5; i++) {
+        const rateButton = document.createElement('button');
+        rateButton.textContent = i;
+        rateButton.className = 'rate-button';
+        rateButton.onclick = () => rateImage(key, i);
+        ratingButtons.appendChild(rateButton);
+      }
+
+      ratingContainer.appendChild(ratingButtons);
+      imgContainer.appendChild(ratingContainer);
+      userImages.appendChild(imgContainer);
+    }
+
+    // Puan verme i�levi
+    function rateImage(imageKey, rating) {
+      const userRatingRef = dbRef(database, `gallery/${imageKey}/ratings/${currentUser.uid}`);
+      set(userRatingRef, rating).then(() => {
+        updateAverageRating(imageKey);
+      });
+    }
+
+       // Ortalama puan� g�ncelle
+    function updateAverageRating(imageKey) {
+      const ratingsRef = dbRef(database, `gallery/${imageKey}/ratings`);
+      onValue(ratingsRef, (snapshot) => {
+        let totalRating = 0;
+        let numberOfRatings = 0;
+
+        snapshot.forEach((childSnapshot) => {
+          totalRating += childSnapshot.val();
+          numberOfRatings++;
+        });
+
+        const averageRating = totalRating / numberOfRatings;
+        const averageRatingRef = dbRef(database, `gallery/${imageKey}/averageRating`);
+        set(averageRatingRef, averageRating);
+      });
+    }
+  </script>
+</body>
+</html>

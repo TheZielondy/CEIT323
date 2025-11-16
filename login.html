@@ -1,0 +1,175 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SignUp and Login</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+
+    <div class="container" id="container">
+        <div class="form-container sign-up-container">
+            <form id="signUpForm">
+                <h1 style="padding-top: 15px">Create Account</h1>
+                <input type="text" id="fnameInp" placeholder="First Name">
+                <input type="text" id="lnameInp" placeholder="Last Name">
+                <input type="email" id="emailInp" placeholder="name@example.com">
+                <input type="password" id="passwordInp" placeholder="Password">
+                <input type="text" id="phoneInp" placeholder="Phone Number">
+                <input type="number" id="ageInp" placeholder="Age">
+                <button type="submit" style="margin-top: 10px" class="btn btn-primary">Create Account</button>
+                <h5>Already have an account! <a class="ghost" id="signIn" style="color:blue;"><u>Sign In</u></a></h5>
+            </form>
+        </div>
+        <div class="form-container sign-in-container">
+            <form id="signInForm">
+                <h1 style="padding-bottom: 15px">Login Now</h1>
+                <input type="email" class="form-control" id="EmailInp" placeholder="name@example.com">
+                <input type="password" class="form-control" id="PasswordInp" placeholder="Password">
+                <button type="submit" class="btn btn-primary">Let Me In...</button>
+                <button id="forgotPassButton">Forgot Password</button>
+                <h5>New to here! <a class="ghost" id="signUp" style="color:blue;"><u>Sign Up</u></a></h5>
+            </form>
+        </div>
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <img src="2..jpg" alt="movie-2" height="480" width="500"/>
+                </div>
+                <div class="overlay-panel overlay-right">
+                    <img src="1..jpg" alt="movie-1" height="480" width="500"/>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+    // Import the functions you need from the SDKs you need
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, set, ref } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBSCuSjLtRxCicBpiYE4zV_CQ6iF23CMos",
+        authDomain: "ceit133-mses.firebaseapp.com",
+        databaseURL: "https://ceit133-mses-default-rtdb.firebaseio.com",
+        projectId: "ceit133-mses",
+        storageBucket: "ceit133-mses.appspot.com",
+        messagingSenderId: "803859950218",
+        appId: "1:803859950218:web:48b897035bb041d1799b73",
+        measurementId: "G-09BSCKLQ2Y"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase();
+    const auth = getAuth(app);
+    const analytics = getAnalytics(app);
+
+    // Check Auth State
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log('User is signed in:', user);
+            // User is signed in, you can redirect or perform other actions
+            window.location.href = "./index.html";
+        } else {
+            console.log('No user is signed in');
+        }
+    });
+
+    // Sign-up Function
+const signUpForm = document.getElementById('signUpForm');
+signUpForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('emailInp').value;
+    const password = document.getElementById('passwordInp').value;
+    const firstName = document.getElementById('fnameInp').value;
+    const lastName = document.getElementById('lnameInp').value;
+    const phone = document.getElementById('phoneInp').value;
+    const age = document.getElementById('ageInp').value;
+
+    createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            const user = userCredential.user;
+            const userRef = ref(db, 'users/' + user.uid);
+            set(userRef, {
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                phone: phone,
+                age: age
+            });
+            alert('User created successfully!');
+        })
+        .catch((error) => {
+            alert(error.message);
+            console.error(error.code, error.message);
+        });
+});
+
+    // Sign-in Function
+    const signInForm = document.getElementById('signInForm');
+    signInForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('EmailInp').value;
+        const password = document.getElementById('PasswordInp').value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                alert('User signed in successfully!');
+                window.location.href = "./index.html";
+            })
+            .catch((error) => {
+                alert(error.message);
+                console.error(error.code, error.message);
+            });
+    });
+
+    // Sign Out Function
+    const signOutButton = document.createElement('button');
+    signOutButton.textContent = "Sign Out";
+    document.body.appendChild(signOutButton);
+
+    signOutButton.addEventListener('click', () => {
+        signOut(auth).then(() => {
+            alert('User signed out successfully!');
+        }).catch((error) => {
+            alert(error.message);
+            console.error(error.code, error.message);
+        });
+    });
+
+    // Toggle Sign Up and Sign In Panels
+    const signUpButton = document.getElementById('signUp');
+    const signInButton = document.getElementById('signIn');
+    const container = document.getElementById('container');
+
+    signUpButton.addEventListener('click', () => {
+        container.classList.add("right-panel-active");
+    });
+    signInButton.addEventListener('click', () => {
+        container.classList.remove("right-panel-active");
+    });
+
+    // Forgot Password Function
+    const forgotPassButton = document.getElementById('forgotPassButton');
+    forgotPassButton.addEventListener('click', () => {
+        const email = document.getElementById('EmailInp').value;
+        sendPasswordResetEmail(auth, email)
+            .then(() => {
+                alert("A Password Reset Link has been sent to your email");
+            })
+            .catch((error) => {
+                console.error(error.code, error.message);
+                alert(error.message);
+            });
+    });
+</script>
+</body>
+</html>
